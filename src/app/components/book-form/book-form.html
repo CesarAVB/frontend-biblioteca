@@ -1,0 +1,73 @@
+<div class="form-overlay" (click)="onCancel()">
+  <div class="form-container" (click)="$event.stopPropagation()">
+    <div class="form-header">
+      <h2>{{ isEditMode() ? 'Editar Livro' : 'Adicionar Novo Livro' }}</h2>
+      <button class="close-btn" (click)="onCancel()" type="button">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <form [formGroup]="bookForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="titulo">Título *</label>
+        <input 
+          id="titulo" 
+          type="text" 
+          formControlName="titulo"
+          placeholder="Digite o título do livro"
+          [class.error]="bookForm.get('titulo')?.invalid && bookForm.get('titulo')?.touched"
+        />
+        @if (bookForm.get('titulo')?.invalid && bookForm.get('titulo')?.touched) {
+          <span class="error-message">{{ getErrorMessage('titulo') }}</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="autor">Autor *</label>
+        <input 
+          id="autor" 
+          type="text" 
+          formControlName="autor"
+          placeholder="Digite o nome do autor"
+          [class.error]="bookForm.get('autor')?.invalid && bookForm.get('autor')?.touched"
+        />
+        @if (bookForm.get('autor')?.invalid && bookForm.get('autor')?.touched) {
+          <span class="error-message">{{ getErrorMessage('autor') }}</span>
+        }
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="isbn">ISBN</label>
+          <input 
+            id="isbn" 
+            type="text" 
+            formControlName="isbn"
+            placeholder="978-85-359-8277-1"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="publicadoEm">Data de Publicação</label>
+          <input 
+            id="publicadoEm" 
+            type="date" 
+            formControlName="publicadoEm"
+          />
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" (click)="onCancel()">
+          Cancelar
+        </button>
+        <button type="submit" class="btn-submit" [disabled]="bookForm.invalid">
+          {{ isEditMode() ? 'Atualizar' : 'Adicionar' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

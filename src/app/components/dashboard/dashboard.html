@@ -1,0 +1,90 @@
+<div class="dashboard">
+  <header class="dashboard-header">
+    <div class="header-badge">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+      </svg>
+      <span>DASHBOARD</span>
+    </div>
+
+    <h1 class="header-title">
+      Minha <span class="gradient-text">Biblioteca</span>
+    </h1>
+
+    <p class="header-subtitle">
+      Gerencie sua coleção de livros de forma elegante e organizada.<br>
+      Adicione, edite e encontre seus títulos favoritos.
+    </p>
+
+    <div class="stats-card">
+      <div class="stats-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </svg>
+      </div>
+      <div class="stats-content">
+        <div class="stats-number">{{ books().length }}</div>
+        <div class="stats-label">livros na coleção</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="dashboard-controls">
+    <div class="search-box">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.35-4.35"></path>
+      </svg>
+      <input 
+        type="text" 
+        placeholder="Buscar por título, autor ou ISBN..."
+        (input)="onSearch($event)"
+        [value]="searchQuery()"
+      />
+    </div>
+
+    <button class="btn-add" (click)="openAddForm()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+      Adicionar Livro
+    </button>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Carregando livros...</p>
+    </div>
+  } @else if (filteredBooks().length === 0) {
+    <div class="empty-state">
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+      </svg>
+      <h3>Nenhum livro encontrado</h3>
+      <p>{{ searchQuery() ? 'Tente ajustar sua busca' : 'Comece adicionando seu primeiro livro' }}</p>
+    </div>
+  } @else {
+    <div class="books-grid">
+      @for (book of filteredBooks(); track book.id) {
+        <app-book-card 
+          [book]="book"
+          (editBook)="onEditBook($event)"
+          (deleteBook)="onDeleteBook($event)"
+        />
+      }
+    </div>
+  }
+
+  @if (showForm()) {
+    <app-book-form 
+      [bookToEdit]="bookToEdit()"
+      (formSubmit)="onFormSubmit($event)"
+      (formCancel)="onFormCancel()"
+    />
+  }
+</div>

@@ -1,0 +1,96 @@
+<div class="container">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div class="dashboard-badge">
+        <span class="icon">✨</span>
+        <span>DASHBOARD</span>
+      </div>
+
+      <h1 class="title">
+        Minha <span class="gradient-text">Biblioteca</span>
+      </h1>
+
+      <p class="subtitle">
+        Gerencie sua coleção de livros de forma elegante e organizada.<br>
+        Adicione, edite e encontre seus títulos favoritos.
+      </p>
+
+      <div class="stats-card">
+        <div class="stat-icon">📚</div>
+        <div class="stat-content">
+          <div class="stat-number">{{ totalBooks() }}</div>
+          <div class="stat-label">livros na coleção</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="avatar-placeholder"></div>
+  </header>
+
+  <!-- Search Bar -->
+  <div class="search-section">
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input 
+        type="text" 
+        placeholder="Buscar por título, autor ou ISBN..."
+        (input)="onSearch($event)"
+        [value]="searchTerm()"
+      >
+    </div>
+
+    <button class="btn-add" (click)="openAddForm()">
+      <span>+</span> Adicionar Livro
+    </button>
+  </div>
+
+  <!-- Loading -->
+  @if (isLoading()) {
+    <div class="loading">Carregando livros...</div>
+  }
+
+  <!-- Books Grid -->
+  @if (!isLoading()) {
+    <div class="books-grid">
+      @for (book of filteredBooks(); track book.id) {
+        <div class="book-card">
+          <div class="card-header">
+            <div class="book-avatar">
+              {{ getInitial(book.titulo) }}
+            </div>
+            <div class="book-year">{{ getYear(book.publicadoEm) }}</div>
+          </div>
+
+          <div class="card-body">
+            <h3 class="book-title">{{ book.titulo }}</h3>
+            <p class="book-author">
+              <span class="bullet">•</span> {{ book.autor }}
+            </p>
+            <p class="book-isbn">
+              <span class="icon">#</span> {{ book.isbn }}
+            </p>
+            <p class="book-date">
+              <span class="icon">📅</span> {{ formatDate(book.publicadoEm) }}
+            </p>
+          </div>
+
+          <div class="card-actions">
+            <button class="btn-edit" (click)="editBook(book)">
+              <span>✏️</span> Editar
+            </button>
+            <button class="btn-delete" (click)="deleteBook(book.id!)">
+              🗑️
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (!isLoading() && filteredBooks().length === 0) {
+    <div class="empty-state">
+      <p>Nenhum livro encontrado.</p>
+    </div>
+  }
+</div>
